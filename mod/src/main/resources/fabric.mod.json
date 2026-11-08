@@ -4,11 +4,14 @@
   "version": "1.0.0",
   "name": "OllieHack",
   "environment": "client",
-  "entrypoints": { "client": [ "com.ollie.hack.HackClient" ] },
-  "mixins": [ "olliehack.mixins.json" ],
+  "entrypoints": {
+    "client": [
+      "com.ollie.hack.HackClient"
+    ]
+  },
   "depends": {
     "fabricloader": ">=0.15.11",
-    "minecraft": "~1.21",
+    "minecraft": ">=1.21.11",
     "java": ">=21",
     "fabric-api": "*"
   }
