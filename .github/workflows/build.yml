@@ -1,34 +1,36 @@
-name: Build mod
+name: Build Fabric Mod
 
 on:
   push:
+    branches: [ "main", "master" ]
   workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout Code
+        uses: actions/checkout@v4
 
-      - uses: actions/setup-java@v4
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
         with:
-          distribution: temurin
-          java-version: 21
+          java-version: '21'
+          distribution: 'temurin'
 
-      - uses: gradle/actions/setup-gradle@v4
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+        working-directory: ./mod # <--- CHANGE THIS if your folder is named differently
+
+      - name: Build with Gradle
+        run: ./gradlew build
+        working-directory: ./mod # <--- CHANGE THIS too
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
         with:
-          gradle-version: 9.2.1
-
-      - name: Build
-        run: |
-          DIR=$(dirname "$(find . -name build.gradle -not -path './.git/*' | head -n 1)")
-          echo "Project folder: $DIR"
-          cd "$DIR"
-          gradle build --no-daemon
-          mkdir -p "$GITHUB_WORKSPACE/out"
-          cp build/libs/displaytweaks-1.0.0.jar "$GITHUB_WORKSPACE/out/"
-
-      - uses: actions/upload-artifact@v4
-        with:
-          name: displaytweaks-jar
-          path: out/displaytweaks-1.0.0.jar
+          name: Mod-Jar
+          path: mod/build/libs/*.jar # <--- AND THIS
